@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My AI Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #22c55e;
+    }
+
+    textarea {
+      width: 90%;
+      height: 80px;
+      border-radius: 10px;
+      padding: 10px;
+      border: none;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: #22c55e;
+      color: black;
+      border: none;
+      margin-top: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #response {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>🤖 My Personal AI</h2>
+
+<textarea id="prompt" placeholder="Ask anything..."></textarea><br>
+<button onclick="askAI()">Ask AI</button>
+
+<div id="response">Response will appear here...</div>
+
+<script>
+async function askAI() {
+  const prompt = document.getElementById("prompt").value;
+
+  if (!prompt) {
+    alert("Type something first!");
+    return;
+  }
+
+  document.getElementById("response").innerText = "Thinking...";
+
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer YOUR_API_KEY_HERE"
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: "You are a smart personal AI assistant. Help with anything clearly."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ]
+      })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("response").innerText =
+      data.choices[0].message.content;
+
+  } catch (error) {
+    document.getElementById("response").innerText =
+      "Error: " + error.message;
+  }
+}
+</script>
+
+</body>
+</html>
